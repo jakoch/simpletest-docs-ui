@@ -1,0 +1,50 @@
+= Theme Demo
+:page-layout: default
+:toc: macro
+:toclevels: 3
+:toctitle: "On this page"
+
+== Introduction
+
+This page demonstrates the modernized theme features: top bar, left navigation, main content width, right TOC, dark mode toggle, and accessible keyboard behaviors.
+
+== Components
+
+=== Buttons
+
+.Button example
+
+[source,html]
+----
+<button class="button">Primary</button>
+----
+
+=== Alerts
+
+.Alert example
+
+[.alert.alert-info]
+====
+This is an info alert. It's purely presentational in this demo.
+====
+
+=== Code sample
+
+[source,js]
+----
+console.log('Hello, Antora theme demo')
+----
+
+== Long Section
+
+=== Subsection A
+
+Content here.
+
+=== Subsection B
+
+Content here.
+
+== Conclusion
+
+Thanks for checking the demo.

@@ -1,0 +1,13 @@
+== SimpleTest Documentation UI
+
+The SimpleTest project leverages Antora for documentation management.
+This repository provides the user interface for the project documentation.
+The UI project is named simpletest-docs-ui.
+It is based on antora-ui-default and has been fully customized and extended
+to meet the requirements of SimpleTest.
+
+=== Commands
+
+- List all commands: `npx gulp --tasks`
+
+- Start dev server: `LIVERELOAD=1 npx gulp preview`

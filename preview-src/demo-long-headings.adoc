@@ -1,0 +1,41 @@
+= Demo: Long Headings
+:toc: macro
+:toclevels: 3
+
+This page exercises nested headings, lots of anchors, and content to test ScrollSpy and navigation.
+
+== Section One
+
+Paragraph text.
+
+=== Subsection 1.1
+
+Content and a code block.
+
+[source,js]
+----
+console.log('hello world')
+----
+
+=== Subsection 1.2
+
+More content with an internal link.
+
+== Section Two
+
+=== Subsection 2.1
+
+- Item A
+- Item B
+  - Subitem B.1
+  - Subitem B.2
+
+=== Subsection 2.2
+
+A longer paragraph to create page height so scrollspy can be tested.
+
+== Section Three
+
+=== Subsection 3.1
+
+Final notes.
