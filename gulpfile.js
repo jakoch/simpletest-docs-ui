@@ -75,7 +75,7 @@ const buildTask = createTask({
 
 const bundleBuildTask = createTask({
   name: 'bundle:build',
-  call: series(cleanTask, lintTask, buildTask),
+  call: series(cleanTask, lintTask, buildTask, task.writeNojekyll(previewDestDir)),
 })
 
 const bundlePackTask = createTask({
@@ -190,7 +190,7 @@ const previewBuildTask = createTask({
   name: 'preview:build',
   desc: 'Process and stage the UI assets and generate pages for the preview',
   // Build Tailwind first so the generated tailwind.css is available to the preview
-  call: series(buildTailwind, parallel(buildCSS, buildJS, buildPreviewPagesTask)),
+  call: series(buildTailwind, parallel(buildCSS, buildJS, buildPreviewPagesTask), task.writeNojekyll(previewDestDir)),
 })
 
 // Serve preview with smart watch

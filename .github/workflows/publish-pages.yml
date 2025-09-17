@@ -1,0 +1,67 @@
+#
+# SPDX-FileCopyrightText: 2025 Jens A. Koch
+# SPDX-License-Identifier: MIT
+#
+# This file is part of https://github.com/jakoch/simpletest-docs-ui
+#
+
+name: Publish to GitHub Pages
+
+on:
+  # You can manually run this workflow.
+  workflow_dispatch:
+  # This workflow does run when pushing to the main branch.
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+
+# ---------------------------------------------------------------------------------------
+
+  publish:
+
+# ---------------------------------------------------------------------------------------
+
+    name: "Publish to gh-pages"
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+
+    steps:
+      - name: 🤘 Checkout main branch
+        uses: actions/checkout@v5
+
+      - name: 🔽 Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: 🔽 Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 🔽 Install dependencies
+        run: npm ci
+
+      - name: 🔨 Build preview site (generate public)
+        run: npx gulp preview:build --no-color
+
+      - name: 📦 Upload `public` folder for Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
