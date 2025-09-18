@@ -55,9 +55,33 @@ jobs:
       - name: 🔽 Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: 🔨 Build preview site (generate public)
-        run: npx gulp preview:build --no-color
+      - name: 🔨 Build preview (this stages into public/)"
+        run: |
+          echo
+          npx gulp preview:build --no-color
 
+      - name: Build assets (this stages assets (css,js,fonts,etc) into public/_)
+        run: |
+          npx gulp build --no-color
+
+      - name: Verify generated assets
+        run: |
+          test -f public/_/css/site.css || (echo "ERROR: missing public/_/css/site.css" && exit 1)
+          test -f public/_/js/site.js  || (echo "ERROR: missing public/_/js/site.js" && exit 1)
+          test -d public/_/font        || (echo "ERROR: missing public/_/font" && exit 1)
+
+      - name: Create zip (build/ui-bundle.zip)
+        run: |
+          npx gulp bundle --no-color
+
+      # Upload the UI bundle as an artifact (useable as Antora UI bundle)
+      - name: Upload UI bundle as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ui-bundle
+          path: build/ui-bundle.zip
+
+      # Publish the `public` folder to GitHub Pages (UI demo site)
       - name: 📦 Upload `public` folder for Pages
         uses: actions/upload-pages-artifact@v4
         with:
