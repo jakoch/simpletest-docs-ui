@@ -37,10 +37,10 @@ jobs:
 
     steps:
       - name: 🤘 Checkout main branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5 # https://github.com/actions/checkout
 
       - name: 🔽 Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v5 # https://github.com/actions/setup-node
         with:
           node-version: '20'
 
@@ -76,16 +76,16 @@ jobs:
 
       # Upload the UI bundle as an artifact (useable as Antora UI bundle)
       - name: Upload UI bundle as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4 # https://github.com/actions/upload-artifact
         with:
           name: ui-bundle
           path: build/ui-bundle.zip
 
       # Publish the `public` folder to GitHub Pages (UI demo site)
       - name: 📦 Upload `public` folder for Pages
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v4 # https://github.com/actions/upload-pages-artifact
         with:
           path: public
 
       - name: 🚀 Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4 # https://github.com/actions/deploy-pages
