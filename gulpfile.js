@@ -66,10 +66,68 @@ const formatTask = createTask({
 const buildTask = createTask({
   name: 'build',
   desc: 'Build and stage the UI assets for bundling',
-  call: task.build(
-    srcDir,
-    destDir,
-    process.argv.slice(2).some((name) => name.startsWith('preview'))
+  call: series(
+    task.build(
+      srcDir,
+      destDir,
+      process.argv.slice(2).some((name) => name.startsWith('preview'))
+    ),
+    // ensureSiteJs: explicit fallback concatenation to guarantee public/_/js/site.js is created
+    function ensureSiteJs () {
+      const vfs = require('vinyl-fs')
+      const concat = require('gulp-concat')
+      const fs = require('fs-extra')
+      const path = require('path')
+      const srcPattern = path.join(srcDir, 'js', '+([0-9])-*.js')
+      const destPath = destDir
+      // remove stray js/font directory if it exists
+      try { fs.removeSync(path.join(destPath, 'js', 'font')) } catch (e) {}
+      return vfs
+        .src(srcPattern, { read: true })
+        .pipe(concat('js/site.js'))
+        .pipe(vfs.dest(destPath))
+    }
+    ,
+    // ensureSiteCss: explicit fallback PostCSS compile to guarantee public/_/css/site.css (and tailwind.css)
+    function ensureSiteCss () {
+      const fs = require('fs-extra')
+      const postcss = require('postcss')
+      const postcssImport = require('postcss-import')
+      const postcssUrl = require('postcss-url')
+      const postcssVar = require('postcss-custom-properties')
+      const autoprefixer = require('autoprefixer')
+      const cssnano = require('cssnano')
+      const path = require('path')
+
+      const inputPath = path.join(srcDir, 'css', 'site.css')
+      const outputPath = path.join(destDir, 'css', 'site.css')
+      const tailwindIn = path.join(srcDir, 'css', 'vendor', 'tailwind.css')
+      const tailwindOut = path.join(destDir, 'css', 'tailwind.css')
+
+      return fs.readFile(inputPath, 'utf8').then((css) =>
+        postcss([
+          postcssImport,
+          postcssUrl([
+            {
+              filter: (asset) => (/^[~][^/]*(?:font|typeface)[^/]*\/.*\/files\/.+\.(?:ttf|woff2?)$/).test(asset.url),
+              url: (asset) => {
+                const relpath = asset.pathname.slice(1)
+                const abspath = require.resolve(relpath)
+                const basename = require('path').basename(abspath)
+                const destpath = require('path').join(`${destDir}/css`, 'font', basename)
+                if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
+                return path.join('..', 'font', basename)
+              },
+            },
+          ]),
+          postcssVar({ preserve: false }),
+          autoprefixer(),
+          cssnano({ preset: 'default' }),
+        ])
+          .process(css, { from: inputPath, to: outputPath })
+          .then((result) => fs.outputFile(outputPath, result.css))
+      ).then(() => fs.readFile(tailwindIn, 'utf8').then((tcss) => fs.outputFile(tailwindOut, tcss)))
+    }
   ),
 })
 

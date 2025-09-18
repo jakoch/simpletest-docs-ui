@@ -10,4 +10,14 @@ to meet the requirements of SimpleTest.
 
 - List all commands: `npx gulp --tasks`
 
+- (Re)Build: `npx gulp clean && npx gulp build`
+
+- Optionally view output folders of generated assets:
+
+```
+ls -la public/_/js
+ls -la public/_/css
+ls -la public/_/font
+```
+
 - Start dev server: `LIVERELOAD=1 npx gulp preview`
