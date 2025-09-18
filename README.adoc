@@ -10,14 +10,27 @@ to meet the requirements of SimpleTest.
 
 - List all commands: `npx gulp --tasks`
 
-- (Re)Build: `npx gulp clean && npx gulp build`
+- To build the assets: `npx gulp clean && npx gulp build`
+- To view output folders of generated assets:
 
-- Optionally view output folders of generated assets:
+  ```
+  ls -la public/_/js
+  ls -la public/_/css
+  ls -la public/_/font
+  ```
+- To build the preview site: `npx gulp preview:build`
 
-```
-ls -la public/_/js
-ls -la public/_/css
-ls -la public/_/font
-```
+- To view output folder of the generated site:
+  ```
+  ls -la public
+  ```
 
 - Start dev server: `LIVERELOAD=1 npx gulp preview`
+
+## Build Order:
+
+The build order is important.
+
+1. build the assets (css, js, fonts, etc) into the folder `/public/_`
+2. build the preview site into the folder `/public`
+3. create the Antora UI bundle `/build/ui-bundle.zip`
