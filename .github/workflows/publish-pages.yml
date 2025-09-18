@@ -55,11 +55,6 @@ jobs:
       - name: 🔽 Install dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: 🔨 Build preview (this stages into public/)"
-        run: |
-          echo
-          npx gulp preview:build --no-color
-
       - name: Build assets (this stages assets (css,js,fonts,etc) into public/_)
         run: |
           npx gulp build --no-color
@@ -69,6 +64,15 @@ jobs:
           test -f public/_/css/site.css || (echo "ERROR: missing public/_/css/site.css" && exit 1)
           test -f public/_/js/site.js  || (echo "ERROR: missing public/_/js/site.js" && exit 1)
           test -d public/_/font        || (echo "ERROR: missing public/_/font" && exit 1)
+
+      - name: 🔨 Build preview (this stages into public/)"
+        run: |
+          echo
+          npx gulp preview:build --no-color
+
+      - name: Verify generated preview site
+        run: |
+          test -f public/index.html || (echo "ERROR: missing public/index.html" && exit 1)
 
       - name: Create zip (build/ui-bundle.zip)
         run: |
