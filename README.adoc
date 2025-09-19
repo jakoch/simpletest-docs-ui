@@ -9,36 +9,8 @@ to meet the requirements of SimpleTest.
 === Commands
 
 - List all commands: `npx gulp --tasks`
-
 - To clean up: `npx gulp clean`
-
-- To build the build the assets (css, js, fonts, etc) into the folder `/public/_`:
-
-`npx gulp build`
-
-- To view the output folders of generated assets:
-
-```
-ls -la public/_/js
-ls -la public/_/css
-ls -la public/_/font
-```
-
-- To build the preview site (html) into the folder `/public`:
-
-`npx gulp preview:build`
-
-- To view the output folder of the generated site:
-
-```
-ls -la public
-
-```
-
-- To package the ui-bundle for Antora:
-
-`npx gulp bundle`
-
-IMPORTANT: The build order is important. Because the `bundle` step calls the `clean` step internally (to get rid of any html and only bundle the assets). Publish before bundling! See .github/workflows/publish-pages.yml for details.
-
+- To build the build the assets (css, js, fonts, etc) into the folder `/public/_`: `npx gulp build`
+- To build the preview site (html) into the folder `/public`: `npx gulp preview:build`
+- To package the ui-bundle for Antora: `npx gulp bundle`
 - To start the dev server: `LIVERELOAD=1 npx gulp preview`
