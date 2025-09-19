@@ -54,29 +54,9 @@ const cleanTask = createTask({
 	call: task.remove(["build", "public"]),
 });
 
-const lintCssTask = createTask({
-	name: "lint:css",
-	desc: "Lint the CSS source files using stylelint (standard config)",
-	call: task.lintCss(glob.css),
-});
+// lint tasks removed: linting is handled outside of gulp (via CLI scripts)
 
-const lintJsTask = createTask({
-	name: "lint:js",
-	desc: "Lint the JavaScript source files using Biome (recommended rules)",
-	call: task.lintJs(glob.js),
-});
-
-const lintTask = createTask({
-	name: "lint",
-	desc: "Lint the CSS and JavaScript source files",
-	call: parallel(lintCssTask, lintJsTask),
-});
-
-const formatTask = createTask({
-	name: "format",
-	desc: "Format the JavaScript source files using Biome format",
-	call: task.format(glob.js),
-});
+// format task removed: formatting is handled via Biome CLI (see package.json scripts)
 
 const buildTask = createTask({
 	name: "build",
@@ -95,12 +75,7 @@ const buildTask = createTask({
 
 const bundleBuildTask = createTask({
 	name: "bundle:build",
-	call: series(
-		cleanTask,
-		lintTask,
-		buildTask,
-		task.writeNojekyll(previewDestDir),
-	),
+	call: series(cleanTask, buildTask, task.writeNojekyll(previewDestDir)),
 });
 
 const bundlePackTask = createTask({
@@ -231,7 +206,6 @@ module.exports = exportTasks(
 	bundleTask,
 	cleanTask,
 	lintTask,
-	formatTask,
 	buildTask,
 	bundleTask,
 	bundlePackTask,
