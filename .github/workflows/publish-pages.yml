@@ -11,9 +11,13 @@ on:
   # You can manually run this workflow.
   workflow_dispatch:
   # This workflow does run when pushing to the main branch.
+  # This workflow does run when pushing tags starting with "v" (e.g. "v1.2.3").
+  # The tag trigger is used to create GitHub Releases (see below).
   push:
     branches:
       - main
+    tags:
+      - 'v*'
 
 permissions:
   contents: read
