@@ -20,7 +20,9 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  # write is required for creating a release
+  contents: write
+  # write is required for publishing to gh-pages
   pages: write
   id-token: write
 
