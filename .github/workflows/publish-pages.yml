@@ -126,6 +126,11 @@ jobs:
       TAG: ${{ github.ref_name }}
 
     steps:
+      # you need to be in a git repo to use the gh cli.
+      # you can not simply download a file and use gh release create.
+      - name: 🔽 Checkout repository
+        uses: actions/checkout@v5
+
       - name: 🔽 Download all artifacts from previous jobs
         uses: actions/download-artifact@v5 # https://github.com/actions/download-artifact
 
