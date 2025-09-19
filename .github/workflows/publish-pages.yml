@@ -35,10 +35,6 @@ jobs:
     name: "Publish to gh-pages"
     runs-on: ubuntu-latest
 
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-
     steps:
       - name: 🤘 Checkout main branch
         uses: actions/checkout@v5 # https://github.com/actions/checkout
