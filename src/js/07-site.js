@@ -17,17 +17,17 @@
 
   function loadTheme() {
     try {
-      const saved = window.localStorage && window.localStorage.getItem(THEME_KEY)
+      const saved = window.localStorage?.getItem(THEME_KEY)
       if (saved) return saved
     } catch (e) {
       /* ignore */
     }
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }
 
   function saveTheme(t) {
     try {
-      window.localStorage && window.localStorage.setItem(THEME_KEY, t)
+      window.localStorage?.setItem(THEME_KEY, t)
     } catch (e) {}
   }
 
@@ -52,11 +52,11 @@
     if (e && typeof e.preventDefault === 'function') e.preventDefault()
     const top = dest.getBoundingClientRect().top + window.scrollY - 72 // account for header
     window.scrollTo({ top, behavior: 'smooth' })
-    window.history && window.history.replaceState && window.history.replaceState(null, '', href)
+    window.history?.replaceState?.(null, '', href)
   }
 
   document.addEventListener('click', e => {
-    const el = e.target && e.target.closest ? e.target.closest('a') : null
+    const el = e.target?.closest ? e.target.closest('a') : null
     if (el) smoothScroll(el, e)
   })
 
@@ -147,18 +147,18 @@
           else focusIndex(items, idx - 1)
           break
         case 'ArrowRight':
-          if (active && active.classList.contains('nav-item-toggle')) {
+          if (active?.classList.contains('nav-item-toggle')) {
             active.parentElement.classList.add('is-active')
             e.preventDefault()
           }
           break
         case 'ArrowLeft':
-          if (active && active.classList.contains('nav-item-toggle')) {
+          if (active?.classList.contains('nav-item-toggle')) {
             active.parentElement.classList.remove('is-active')
             e.preventDefault()
           } else {
-            const li = active && active.closest && active.closest('.nav-item')
-            if (li && li.parentElement && li.parentElement.closest('.nav-item')) {
+            const li = active?.closest?.('.nav-item')
+            if (li?.parentElement?.closest('.nav-item')) {
               const parentLi = li.parentElement.closest('.nav-item')
               const link = parentLi.querySelector('.nav-link, .nav-item-toggle')
               if (link) {
@@ -170,7 +170,7 @@
           break
         case 'Enter':
         case ' ':
-          if (active && active.classList.contains('nav-item-toggle')) {
+          if (active?.classList.contains('nav-item-toggle')) {
             active.parentElement.classList.toggle('is-active')
             e.preventDefault()
           }

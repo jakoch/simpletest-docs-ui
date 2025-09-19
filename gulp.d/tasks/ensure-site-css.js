@@ -5,7 +5,7 @@ const postcssUrl = require('postcss-url')
 const postcssVar = require('postcss-custom-properties')
 const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
-const path = require('path')
+const path = require('node:path')
 
 module.exports = (srcDir, destDir) => () => {
   const inputPath = path.join(srcDir, 'css', 'site.css')
@@ -28,8 +28,8 @@ module.exports = (srcDir, destDir) => () => {
             url: asset => {
               const relpath = asset.pathname.slice(1)
               const abspath = require.resolve(relpath)
-              const basename = require('path').basename(abspath)
-              const destpath = require('path').join(`${destDir}`, 'font', basename)
+              const basename = require('node:path').basename(abspath)
+              const destpath = require('node:path').join(`${destDir}`, 'font', basename)
               if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
               return path.join('..', 'font', basename)
             }

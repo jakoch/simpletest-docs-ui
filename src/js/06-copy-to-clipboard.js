@@ -8,7 +8,12 @@
   const svgAs = config.svgAs
   const uiRootPath = (config.uiRootPath == null ? window.uiRootPath : config.uiRootPath) || '.'
   ;[].slice.call(document.querySelectorAll('.doc pre.highlight, .doc .literalblock pre')).forEach(pre => {
-    let code, language, lang, copy, toast, toolbox
+    let code
+    let language
+    let lang
+    let copy
+    let toast
+    let toolbox
     if (pre.classList.contains('highlight')) {
       code = pre.querySelector('code')
       if ((language = code.dataset.lang) && language !== 'console') {
@@ -36,12 +41,12 @@
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         svg.setAttribute('class', 'copy-icon')
         const use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
-        use.setAttribute('href', uiRootPath + '/img/octicons-16.svg#icon-clippy')
+        use.setAttribute('href', `${uiRootPath}/img/octicons-16.svg#icon-clippy`)
         svg.appendChild(use)
         copy.appendChild(svg)
       } else {
         const img = document.createElement('img')
-        img.src = uiRootPath + '/img/octicons-16.svg#view-clippy'
+        img.src = `${uiRootPath}/img/octicons-16.svg#view-clippy`
         img.alt = 'copy icon'
         img.className = 'copy-icon'
         copy.appendChild(img)

@@ -37,7 +37,7 @@ function turnRawPagesIntoPageUiModels(site, pages, contentCatalog) {
 }
 
 function isValidDate(dateStr) {
-  return !isNaN(Date.parse(dateStr))
+  return !Number.isNaN(Date.parse(dateStr))
 }
 
 function sortByRevDate(a, b) {

@@ -68,7 +68,7 @@
     let hash = window.location.hash
     if (hash) {
       if (hash.indexOf('%')) hash = decodeURIComponent(hash)
-      navLink = menuPanel.querySelector('.nav-link[href="' + hash + '"]')
+      navLink = menuPanel.querySelector(`.nav-link[href="${hash}"]`)
       if (!navLink) {
         const targetNode = document.getElementById(hash.slice(1))
         if (targetNode) {
@@ -77,8 +77,8 @@
           while ((current = current.parentNode) && current !== ceiling) {
             let id = current.id
             // NOTE: look for section heading
-            if (!id && (id = SECT_CLASS_RX.test(current.className))) id = (current.firstElementChild || {}).id
-            if (id && (navLink = menuPanel.querySelector('.nav-link[href="#' + id + '"]'))) break
+            if (!id && (id = SECT_CLASS_RX.test(current.className))) id = current.firstElementChild?.id
+            if (id && (navLink = menuPanel.querySelector(`.nav-link[href="#${id}"]`))) break
           }
         }
       }
@@ -137,7 +137,7 @@
     navContainer.classList.add('is-active')
     const bounds = nav.getBoundingClientRect()
     const expectedHeight = window.innerHeight - Math.round(bounds.top)
-    if (Math.round(bounds.height) !== expectedHeight) nav.style.height = expectedHeight + 'px'
+    if (Math.round(bounds.height) !== expectedHeight) nav.style.height = `${expectedHeight}px`
     html.addEventListener('click', hideNav)
   }
 

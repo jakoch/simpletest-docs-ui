@@ -1,4 +1,4 @@
-const { posix: path } = require('path')
+const { posix: path } = require('node:path')
 
 module.exports = (to, from, ctx) => {
   if (!to) return '#'
@@ -13,8 +13,8 @@ module.exports = (to, from, ctx) => {
     to = to.slice(0, hashIdx)
   }
   if (to === from) return hash || (isDir(to) ? './' : path.basename(to))
-  const rel = path.relative(path.dirname(from + '.'), to)
-  return rel ? (isDir(to) ? rel + '/' : rel) + hash : (isDir(to) ? './' : '../' + path.basename(to)) + hash
+  const rel = path.relative(path.dirname(`${from}.`), to)
+  return rel ? (isDir(to) ? `${rel}/` : rel) + hash : (isDir(to) ? './' : `../${path.basename(to)}`) + hash
 }
 
 function isDir(str) {

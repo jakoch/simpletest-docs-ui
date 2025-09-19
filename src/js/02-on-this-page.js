@@ -12,8 +12,8 @@
   for (let level = 0; level <= levels; level++) {
     const headingSelector = [articleSelector]
     if (level) {
-      for (let l = 1; l <= level; l++) headingSelector.push((l === 2 ? '.sectionbody>' : '') + '.sect' + l)
-      headingSelector.push('h' + (level + 1) + '[id]' + (level > 1 ? ':not(.discrete)' : ''))
+      for (let l = 1; l <= level; l++) headingSelector.push(`${l === 2 ? '.sectionbody>' : ''}.sect${l}`)
+      headingSelector.push(`h${level + 1}[id]${level > 1 ? ':not(.discrete)' : ''}`)
     } else {
       headingSelector.push('h1[id].sect0')
     }
@@ -27,7 +27,7 @@
   const list = headings.reduce((accum, heading) => {
     const link = document.createElement('a')
     link.textContent = heading.textContent
-    links[(link.href = '#' + heading.id)] = link
+    links[(link.href = `#${heading.id}`)] = link
     const listItem = document.createElement('li')
     listItem.dataset.level = Number.parseInt(heading.nodeName.slice(1), 10) - 1
     listItem.appendChild(link)
@@ -65,7 +65,7 @@
       const activeFragments = []
       const lastIdx = headings.length - 1
       headings.forEach((heading, idx) => {
-        const fragment = '#' + heading.id
+        const fragment = `#${heading.id}`
         if (idx === lastIdx || heading.getBoundingClientRect().top + getNumericStyleVal(heading, 'paddingTop') > ceil) {
           activeFragments.push(fragment)
           if (lastActiveFragment.indexOf(fragment) < 0) links[fragment].classList.add('is-active')
@@ -86,7 +86,7 @@
     let activeFragment
     headings.some(heading => {
       if (heading.getBoundingClientRect().top + getNumericStyleVal(heading, 'paddingTop') - buffer > ceil) return true
-      activeFragment = '#' + heading.id
+      activeFragment = `#${heading.id}`
       return false
     })
     if (activeFragment) {

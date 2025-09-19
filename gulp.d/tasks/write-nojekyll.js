@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const ospath = require('path')
+const ospath = require('node:path')
 
 // Exports a task factory: (dest) => () => Promise
 module.exports =

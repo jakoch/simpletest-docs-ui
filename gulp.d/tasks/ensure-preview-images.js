@@ -1,5 +1,5 @@
 const vfs = require('vinyl-fs')
-const path = require('path')
+const path = require('node:path')
 
 module.exports = (previewSrcDir, destDir) => () => {
   const srcGlob = '**/*.{png,svg}'

@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const { Transform } = require('stream')
+const { Transform } = require('node:stream')
 const map = transform => new Transform({ objectMode: true, transform })
 const vfs = require('vinyl-fs')
 

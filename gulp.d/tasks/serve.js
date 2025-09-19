@@ -1,5 +1,5 @@
 const connect = require('gulp-connect')
-const os = require('os')
+const os = require('node:os')
 
 const ANY_HOST = '0.0.0.0'
 const URL_RX = /(https?):\/\/(?:[^/: ]+)(:\d+)?/
@@ -25,7 +25,7 @@ function decorateLog(_, app) {
   app.log = msg => {
     if (msg.startsWith('Server started ')) {
       const localIp = getLocalIp()
-      const replacement = '$1://localhost$2' + (localIp ? ` and $1://${localIp}$2` : '')
+      const replacement = `$1://localhost$2${localIp ? ` and $1://${localIp}$2` : ''}`
       msg = msg.replace(URL_RX, replacement)
     }
     _log(msg)

@@ -8,14 +8,14 @@ const fs = require('fs-extra')
 // `imageminModule` will be assigned inside the exported task when needed.
 let imageminModule
 const merge = require('merge-stream')
-const ospath = require('path')
+const ospath = require('node:path')
 const path = ospath.posix
 const postcss = require('gulp-postcss')
 const postcssCalc = require('postcss-calc')
 const postcssImport = require('postcss-import')
 const postcssUrl = require('postcss-url')
 const postcssVar = require('postcss-custom-properties')
-const { Transform } = require('stream')
+const { Transform } = require('node:stream')
 const map = transform => new Transform({ objectMode: true, transform })
 const through = () => map((file, enc, next) => next(null, file))
 const uglify = require('gulp-uglify')
@@ -143,7 +143,7 @@ function bundle({ base: basedir, ext: bundleExt = '.bundle.js' }) {
             next(
               bundleError,
               Object.assign(file, {
-                path: file.path.slice(0, file.path.length - 10) + '.js'
+                path: `${file.path.slice(0, file.path.length - 10)}.js`
               })
             )
           })

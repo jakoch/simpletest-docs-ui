@@ -1,5 +1,5 @@
 const fs = require('fs-extra')
-const path = require('path')
+const path = require('node:path')
 
 module.exports = (srcDir, destDir) => () => {
   const copyLayouts = fs.copy(

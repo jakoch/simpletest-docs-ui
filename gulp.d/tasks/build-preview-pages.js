@@ -2,10 +2,10 @@ const Asciidoctor = require('@asciidoctor/core')()
 const fs = require('fs-extra')
 const handlebars = require('handlebars')
 const merge = require('merge-stream')
-const ospath = require('path')
+const ospath = require('node:path')
 const path = ospath.posix
 const requireFromString = require('require-from-string')
-const { Transform } = require('stream')
+const { Transform } = require('node:stream')
 const map = (transform = () => {}, flush = undefined) => new Transform({ objectMode: true, transform, flush })
 const vfs = require('vinyl-fs')
 const yaml = require('js-yaml')
@@ -27,8 +27,8 @@ module.exports =
       )
     ])
       .then(([baseUiModel, { layouts }]) => {
-        const extensions = ((baseUiModel.asciidoc || {}).extensions || []).map(request => {
-          ASCIIDOC_ATTRIBUTES[request.replace(/^@|\.js$/, '').replace(/[/]/g, '-') + '-loaded'] = ''
+        const extensions = (baseUiModel.asciidoc?.extensions || []).map(request => {
+          ASCIIDOC_ATTRIBUTES[`${request.replace(/^@|\.js$/, '').replace(/[/]/g, '-')}-loaded`] = ''
           const extension = require(request)
           extension.register.call(Asciidoctor.Extensions)
           return extension
@@ -38,7 +38,7 @@ module.exports =
           for (const version of component.versions || []) version.asciidoc = asciidoc
         }
         baseUiModel = { ...baseUiModel, env: process.env }
-        delete baseUiModel.asciidoc
+        baseUiModel.asciidoc = undefined
         return [baseUiModel, layouts]
       })
       .then(([baseUiModel, layouts]) => {
@@ -174,12 +174,12 @@ function resolvePage(spec, context = {}) {
 }
 
 function resolvePageURL(spec, context = {}) {
-  if (spec) return '/' + (spec = spec.split(':').pop()).slice(0, spec.lastIndexOf('.')) + '.html'
+  if (spec) return `/${((spec = spec.split(':').pop())).slice(0, spec.lastIndexOf('.'))}.html`
 }
 
 function transformHandlebarsError({ message, stack }, layout) {
   const m = stack.match(/^ *at Object\.ret \[as (.+?)\]/m)
-  const templatePath = `src/${m ? 'partials/' + m[1] : 'layouts/' + layout}.hbs`
+  const templatePath = `src/${m ? `partials/${m[1]}` : `layouts/${layout}`}.hbs`
   const err = new Error(`${message}${~message.indexOf('\n') ? '\n^ ' : ' '}in UI template ${templatePath}`)
   err.stack = [err.toString()].concat(stack.slice(message.length + 8)).join('\n')
   return err

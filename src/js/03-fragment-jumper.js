@@ -15,7 +15,7 @@
   function jumpToAnchor(e) {
     if (e) {
       if (e.altKey || e.ctrlKey) return
-      window.location.hash = '#' + this.id
+      window.location.hash = `#${this.id}`
       e.preventDefault()
     }
     const y = computePosition(this, 0) - toolbar.getBoundingClientRect().bottom
@@ -24,7 +24,8 @@
   }
 
   window.addEventListener('load', function jumpOnLoad(e) {
-    let fragment, target
+    let fragment
+    let target
     if ((fragment = decodeFragment(window.location.hash)) && (target = document.getElementById(fragment))) {
       jumpToAnchor.call(target, false)
       setTimeout(jumpToAnchor.bind(target, false), 250)
@@ -33,7 +34,8 @@
   })
 
   Array.prototype.slice.call(document.querySelectorAll('a[href^="#"]')).forEach(el => {
-    let fragment, target
+    let fragment
+    let target
     if ((fragment = decodeFragment(el.hash)) && (target = document.getElementById(fragment))) {
       el.addEventListener('click', jumpToAnchor.bind(target))
     }

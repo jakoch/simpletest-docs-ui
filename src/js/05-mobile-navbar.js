@@ -12,7 +12,7 @@
       menu.style.maxHeight = ''
       const expectedMaxHeight = window.innerHeight - Math.round(menu.getBoundingClientRect().top)
       const actualMaxHeight = Number.parseInt(window.getComputedStyle(menu).maxHeight, 10)
-      if (actualMaxHeight !== expectedMaxHeight) menu.style.maxHeight = expectedMaxHeight + 'px'
+      if (actualMaxHeight !== expectedMaxHeight) menu.style.maxHeight = `${expectedMaxHeight}px`
     }
   }
 })()

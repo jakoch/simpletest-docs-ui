@@ -4,7 +4,7 @@ const exportTasks = require('./gulp.d/lib/export-tasks')
 const log = require('fancy-log')
 const newer = require('gulp-newer')
 const autoprefixer = require('autoprefixer')
-const path = require('path')
+const path = require('node:path')
 
 const bundleName = 'ui'
 const buildDir = 'build'
