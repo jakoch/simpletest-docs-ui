@@ -45,10 +45,6 @@ const cleanTask = createTask({
   call: task.remove(['build', 'public'])
 })
 
-// lint tasks removed: linting is handled outside of gulp (via CLI scripts)
-
-// format task removed: formatting is handled via Biome CLI (see package.json scripts)
-
 const buildTask = createTask({
   name: 'build',
   desc: 'Build and stage the UI assets for bundling',
@@ -180,7 +176,6 @@ const previewTask = createTask({
 module.exports = exportTasks(
   bundleTask,
   cleanTask,
-  lintTask,
   buildTask,
   bundleTask,
   bundlePackTask,
