@@ -72,6 +72,15 @@ const buildTask = createTask({
       destDir,
       process.argv.slice(2).some((name) => name.startsWith('preview'))
     ),
+    // ensureImages: copy src/img into public/_/img so `gulp build` alone produces images
+    function ensureImages () {
+      const fs = require('fs-extra')
+      const path = require('path')
+      const src = path.join(srcDir, 'img')
+      const dest = path.join(destDir, 'img')
+      return fs.pathExists(src).then((exists) => (exists ? fs.copy(src, dest) : Promise.resolve()))
+    }
+    ,
     // ensureSiteJs: explicit fallback concatenation to guarantee public/_/js/site.js is created
     function ensureSiteJs () {
       const vfs = require('vinyl-fs')
