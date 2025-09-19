@@ -56,9 +56,9 @@ jobs:
         run: |
           npm install --quiet --no-progress --legacy-peer-deps
 
-      - name: Audit Fix
+      - name: Audit Fix Force (you have no choice in this npm mess)
         run: |
-          npm audit fix --legacy-peer-deps
+          npm audit fix --force --legacy-peer-deps
 
       - name: Lint
         run: |
