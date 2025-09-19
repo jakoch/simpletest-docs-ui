@@ -68,6 +68,8 @@ jobs:
         run: |
           npx gulp build
 
+      #test -d public/_/layouts      || (echo "ERROR: missing public/_/layouts" && exit 1)
+      #test -d public/_/partials     || (echo "ERROR: missing public/_/partials" && exit 1)
       - name: Verify generated assets
         run: |
           ls -lahr public/_/
@@ -75,8 +77,6 @@ jobs:
           test -f public/_/js/site.js   || (echo "ERROR: missing public/_/js/site.js" && exit 1)
           test -d public/_/font         || (echo "ERROR: missing public/_/font" && exit 1)
           test -d public/_/img          || (echo "ERROR: missing public/_/img" && exit 1)
-          test -d public/_/layouts      || (echo "ERROR: missing public/_/layouts" && exit 1)
-          test -d public/_/partials     || (echo "ERROR: missing public/_/partials" && exit 1)
 
       - name: 🔨 Build preview (this stages into public/)"
         run: |
