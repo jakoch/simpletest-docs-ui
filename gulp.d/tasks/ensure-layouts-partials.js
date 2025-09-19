@@ -12,5 +12,10 @@ module.exports = (srcDir, destDir) => () => {
     path.join(process.cwd(), destDir, 'partials'),
     { overwrite: true }
   )
-  return Promise.all([copyLayouts, copyPartials])
+  const copyHelpers = fs.copy(
+    path.join(process.cwd(), 'src', 'helpers'),
+    path.join(process.cwd(), destDir, 'helpers'),
+    { overwrite: true }
+  )
+  return Promise.all([copyLayouts, copyPartials, copyHelpers])
 }
