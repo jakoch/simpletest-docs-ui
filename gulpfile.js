@@ -22,6 +22,13 @@ const serverConfig = { host: '0.0.0.0', port: 5252, livereload }
 
 const task = require('./gulp.d/tasks')
 
+// internal helper tasks moved into gulp.d/tasks
+const ensureImages = require('./gulp.d/tasks/ensure-images')
+const ensureSiteJs = require('./gulp.d/tasks/ensure-site-js')
+const ensureSiteCss = require('./gulp.d/tasks/ensure-site-css')
+const ensurePreviewImages = require('./gulp.d/tasks/ensure-preview-images')
+const ensureLayoutsPartials = require('./gulp.d/tasks/ensure-layouts-partials')
+
 // Glob definitions
 const glob = {
   all: [srcDir, previewSrcDir],
@@ -72,76 +79,9 @@ const buildTask = createTask({
       destDir,
       process.argv.slice(2).some((name) => name.startsWith('preview'))
     ),
-    // ensureImages: copy src/img into public/_/img so `gulp build` alone produces images
-    function ensureImages () {
-      const fs = require('fs-extra')
-      const path = require('path')
-      const src = path.join(srcDir, 'img')
-      const dest = path.join(destDir, 'img')
-      return fs.pathExists(src).then((exists) => (exists ? fs.copy(src, dest) : Promise.resolve()))
-    }
-    ,
-    // ensureSiteJs: explicit fallback concatenation to guarantee public/_/js/site.js is created
-    function ensureSiteJs () {
-      const vfs = require('vinyl-fs')
-      const concat = require('gulp-concat')
-      const fs = require('fs-extra')
-      const path = require('path')
-      const srcPattern = path.join(srcDir, 'js', '+([0-9])-*.js')
-      const destPath = destDir
-      // remove stray js/font directory if it exists
-      try { fs.removeSync(path.join(destPath, 'js', 'font')) } catch (e) {}
-      return vfs
-        .src(srcPattern, { read: true })
-        .pipe(concat('js/site.js'))
-        .pipe(vfs.dest(destPath))
-    }
-    ,
-    // ensureSiteCss: explicit fallback PostCSS compile to guarantee public/_/css/site.css (and tailwind.css)
-    function ensureSiteCss () {
-      const fs = require('fs-extra')
-      const postcss = require('postcss')
-      const postcssImport = require('postcss-import')
-      const postcssUrl = require('postcss-url')
-      const postcssVar = require('postcss-custom-properties')
-      const autoprefixer = require('autoprefixer')
-      const cssnano = require('cssnano')
-      const path = require('path')
-
-      const inputPath = path.join(srcDir, 'css', 'site.css')
-      const outputPath = path.join(destDir, 'css', 'site.css')
-      const tailwindIn = path.join(srcDir, 'css', 'vendor', 'tailwind.css')
-      const tailwindOut = path.join(destDir, 'css', 'tailwind.css')
-
-  // Remove any stale css/font directory left by older runs so fonts only live
-  // under `public/_/font`.
-  try { fs.removeSync(path.join(destDir, 'css', 'font')) } catch (e) {}
-
-      return fs.readFile(inputPath, 'utf8').then((css) =>
-        postcss([
-          postcssImport,
-          postcssUrl([
-            {
-              filter: (asset) => (/^[~][^/]*(?:font|typeface)[^/]*\/.*\/files\/.+\.(?:ttf|woff2?)$/).test(asset.url),
-              url: (asset) => {
-                const relpath = asset.pathname.slice(1)
-                const abspath = require.resolve(relpath)
-                const basename = require('path').basename(abspath)
-                // Place fonts at destDir/font so they are on same level as css/js
-                const destpath = require('path').join(`${destDir}`, 'font', basename)
-                if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
-                return path.join('..', 'font', basename)
-              },
-            },
-          ]),
-          postcssVar({ preserve: false }),
-          autoprefixer(),
-          cssnano({ preset: 'default' }),
-        ])
-          .process(css, { from: inputPath, to: outputPath })
-          .then((result) => fs.outputFile(outputPath, result.css))
-      ).then(() => fs.readFile(tailwindIn, 'utf8').then((tcss) => fs.outputFile(tailwindOut, tcss)))
-    }
+    ensureImages(srcDir, destDir),
+    ensureSiteJs(srcDir, destDir),
+    ensureSiteCss(srcDir, destDir)
   ),
 })
 
@@ -167,23 +107,11 @@ const bundleTask = createTask({
   // Ensure preview images are copied into the staging folder before packing so
   // the UI bundle always contains images referenced by the preview pages.
   call: series(bundleBuildTask, function ensurePreviewImages () {
-    const vfs = require('vinyl-fs')
-    const path = require('path')
-    const srcGlob = '**/*.{png,svg}'
-    // Copy preview images into public/_/img preserving relative paths from preview-src
-    return vfs.src(srcGlob, { base: previewSrcDir, cwd: previewSrcDir, allowEmpty: true }).pipe(
-      vfs.dest(path.join(destDir, 'img'))
-    )
+    return ensurePreviewImages(previewSrcDir, destDir)()
   },
   // Copy handlebars layouts and partials into the staging folder so they're included
   // in the ui-bundle. Layouts and partials are required by Antora UI bundles.
-  function ensureLayoutsAndPartials () {
-    const fs = require('fs-extra')
-    const path = require('path')
-    const copyLayouts = fs.copy(path.join(process.cwd(), 'src', 'layouts'), path.join(process.cwd(), destDir, 'layouts'), { overwrite: true })
-    const copyPartials = fs.copy(path.join(process.cwd(), 'src', 'partials'), path.join(process.cwd(), destDir, 'partials'), { overwrite: true })
-    return Promise.all([copyLayouts, copyPartials])
-  },
+  function ensureLayoutsAndPartials () { return ensureLayoutsPartials(srcDir, destDir)() },
   bundlePackTask),
 })
 
@@ -200,60 +128,13 @@ const packTask = createTask({
 // CSS incremental build — process site.css with PostCSS directly for preview
 const buildCSS = createTask({
   name: 'preview:build-css',
-  call: function () {
-    const fs = require('fs-extra')
-    const postcssLib = require('postcss')
-    const postcssImport = require('postcss-import')
-    const postcssUrl = require('postcss-url')
-    const postcssVar = require('postcss-custom-properties')
-
-    const inputPath = `${srcDir}/css/site.css`
-    const outputPath = `${destDir}/css/site.css`
-
-    return fs.readFile(inputPath, 'utf8').then((css) =>
-      postcssLib([
-        postcssImport,
-        postcssUrl([
-          {
-            filter: (asset) => (/^[~][^/]*(?:font|typeface)[^/]*\/.*\/files\/.+\.(?:ttf|woff2?)$/).test(asset.url),
-            url: (asset) => {
-              const relpath = asset.pathname.slice(1)
-              const abspath = require.resolve(relpath)
-              const basename = require('path').basename(abspath)
-              // Place fonts at the same level as css and js: public/_/font
-              const destpath = require('path').join(`${destDir}`, 'font', basename)
-              if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
-              return path.join('..', 'font', basename)
-            },
-          },
-        ]),
-        postcssVar({ preserve: true }),
-        autoprefixer(),
-      ])
-        .process(css, { from: inputPath, to: outputPath })
-        .then((result) => fs.outputFile(outputPath, result.css))
-        .then(() => {
-          if (livereload) livereload()
-        })
-    )
-  },
+  call: require('./gulp.d/tasks/build-css')(srcDir, destDir, livereload),
 })
 
 // Tailwind build for preview (generates compiled tailwind.css into preview dest)
 const buildTailwind = createTask({
   name: 'preview:build-tailwind',
-  call: function () {
-    const fs = require('fs-extra')
-    const postcss = require('postcss')
-    const tailwindPostCss = require('@tailwindcss/postcss')
-    const inputPath = './src/css/vendor/tailwind.css'
-    const outputPath = `${destDir}/css/tailwind.css`
-    return fs.readFile(inputPath, 'utf8').then((css) =>
-      postcss([tailwindPostCss(), autoprefixer()])
-        .process(css, { from: inputPath, to: outputPath })
-        .then((result) => fs.outputFile(outputPath, result.css))
-    )
-  },
+  call: require('./gulp.d/tasks/build-tailwind')(srcDir, destDir),
 })
 
 // JS incremental build
