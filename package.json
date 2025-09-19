@@ -1,6 +1,6 @@
 {
   "name": "simpletest-docs-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This project produces the UI for the SimpleTest documentation site.",
   "homepage": "https://github.com/jakoch/simpletest-docs-ui",
   "license": "MPL",
