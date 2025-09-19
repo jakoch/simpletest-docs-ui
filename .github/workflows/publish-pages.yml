@@ -96,7 +96,7 @@ jobs:
       - name: 🚀 Deploy to GitHub Pages
         uses: actions/deploy-pages@v4 # https://github.com/actions/deploy-pages
 
-      - name: Create zip (build/ui-bundle.zip)
+      - name: 📦 Create zip (build/ui-bundle.zip)
         run: |
           npx gulp bundle
 
@@ -132,3 +132,13 @@ jobs:
       - name: Display downloaded files
         run: |
           ls -R
+
+      - name: 🚀 Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Creating new release: $TAG"
+          gh release create "$TAG" build/ui-bundle.zip \
+           --title "$TAG" \
+           --notes "Release $TAG" \
+           --latest
