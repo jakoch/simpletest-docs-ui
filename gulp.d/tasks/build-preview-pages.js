@@ -139,10 +139,14 @@ function compileLayouts (src) {
 }
 
 function copyImages (src, dest) {
-  return vfs
-    .src('**/*.{png,svg}', { base: src, cwd: src })
-    .pipe(vfs.dest(dest))
-    .pipe(map((file, enc, next) => next()))
+  // Copy preview images into two places:
+  // 1) `dest` (e.g. `public`) so preview pages that reference images directly can still find them,
+  // 2) `dest/_/img` so the pack task (which zips `public/_`) will include them under `public/_/img`.
+  const srcGlob = '**/*.{png,svg}'
+  const streamPreview = vfs.src(srcGlob, { base: src, cwd: src }).pipe(vfs.dest(dest))
+  // Write staging copies under dest/_/img to ensure images are nested under public/_/img in the bundle
+  const streamStaging = vfs.src(srcGlob, { base: src, cwd: src }).pipe(vfs.dest(path.join(dest, '_', 'img')))
+  return merge(streamPreview, streamStaging).pipe(map((file, enc, next) => next()))
 }
 
 function resolvePage (spec, context = {}) {

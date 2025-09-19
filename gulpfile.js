@@ -104,6 +104,10 @@ const buildTask = createTask({
       const tailwindIn = path.join(srcDir, 'css', 'vendor', 'tailwind.css')
       const tailwindOut = path.join(destDir, 'css', 'tailwind.css')
 
+  // Remove any stale css/font directory left by older runs so fonts only live
+  // under `public/_/font`.
+  try { fs.removeSync(path.join(destDir, 'css', 'font')) } catch (e) {}
+
       return fs.readFile(inputPath, 'utf8').then((css) =>
         postcss([
           postcssImport,
@@ -114,7 +118,8 @@ const buildTask = createTask({
                 const relpath = asset.pathname.slice(1)
                 const abspath = require.resolve(relpath)
                 const basename = require('path').basename(abspath)
-                const destpath = require('path').join(`${destDir}/css`, 'font', basename)
+                // Place fonts at destDir/font so they are on same level as css/js
+                const destpath = require('path').join(`${destDir}`, 'font', basename)
                 if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
                 return path.join('..', 'font', basename)
               },
@@ -150,7 +155,27 @@ const bundlePackTask = createTask({
 const bundleTask = createTask({
   name: 'bundle',
   desc: 'Clean, lint, build, and bundle the UI for publishing',
-  call: series(bundleBuildTask, bundlePackTask),
+  // Ensure preview images are copied into the staging folder before packing so
+  // the UI bundle always contains images referenced by the preview pages.
+  call: series(bundleBuildTask, function ensurePreviewImages () {
+    const vfs = require('vinyl-fs')
+    const path = require('path')
+    const srcGlob = '**/*.{png,svg}'
+    // Copy preview images into public/_/img preserving relative paths from preview-src
+    return vfs.src(srcGlob, { base: previewSrcDir, cwd: previewSrcDir, allowEmpty: true }).pipe(
+      vfs.dest(path.join(destDir, 'img'))
+    )
+  },
+  // Copy handlebars layouts and partials into the staging folder so they're included
+  // in the ui-bundle. Layouts and partials are required by Antora UI bundles.
+  function ensureLayoutsAndPartials () {
+    const fs = require('fs-extra')
+    const path = require('path')
+    const copyLayouts = fs.copy(path.join(process.cwd(), 'src', 'layouts'), path.join(process.cwd(), destDir, 'layouts'), { overwrite: true })
+    const copyPartials = fs.copy(path.join(process.cwd(), 'src', 'partials'), path.join(process.cwd(), destDir, 'partials'), { overwrite: true })
+    return Promise.all([copyLayouts, copyPartials])
+  },
+  bundlePackTask),
 })
 
 const packTask = createTask({
@@ -186,7 +211,8 @@ const buildCSS = createTask({
               const relpath = asset.pathname.slice(1)
               const abspath = require.resolve(relpath)
               const basename = require('path').basename(abspath)
-              const destpath = require('path').join(`${destDir}/css`, 'font', basename)
+              // Place fonts at the same level as css and js: public/_/font
+              const destpath = require('path').join(`${destDir}`, 'font', basename)
               if (!fs.pathExistsSync(destpath)) fs.copySync(abspath, destpath)
               return path.join('..', 'font', basename)
             },

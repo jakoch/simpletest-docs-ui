@@ -85,10 +85,9 @@ module.exports = (src, dest, preview) => {
         .src(['css/site.css', 'css/vendor/*.css'], { ...opts, sourcemaps, allowEmpty: true })
         .pipe(postcss((file) => ({ plugins: postcssPlugins, options: { file } }))),
       vfs.src('font/*.{ttf,woff*(2)}', opts),
-      vfs.src('img/**/*.{gif,ico,jpg,png,svg}', opts).pipe(imageminPlugin),
-      vfs.src('helpers/*.js', opts),
-      vfs.src('layouts/*.hbs', opts),
-      vfs.src('partials/*.hbs', opts),
+  vfs.src('img/**/*.{gif,ico,jpg,png,svg}', opts).pipe(imageminPlugin),
+  vfs.src('layouts/*.hbs', opts),
+  vfs.src('partials/*.hbs', opts),
       vfs.src('static/**/*[!~]', { ...opts, base: ospath.join(src, 'static'), dot: true })
     ).pipe(vfs.dest(dest, { sourcemaps: sourcemaps && '.' }))
   }

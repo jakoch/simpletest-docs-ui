@@ -53,9 +53,18 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: 🔽 Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: |
+          npm install --quiet --no-progress --legacy-peer-deps
 
-      - name: Build assets (this stages assets (css,js,fonts,etc) into public/_)
+      - name: Audit Fix
+        run: |
+          npm audit fix --legacy-peer-deps
+
+      - name: Lint
+        run: |
+          npx gulp lint
+
+      - name: 🔨 Build assets (this stages assets (css,js,fonts,etc) into public/_)
         run: |
           npx gulp build
 
@@ -63,8 +72,11 @@ jobs:
         run: |
           ls -lahr public/_/
           test -f public/_/css/site.css || (echo "ERROR: missing public/_/css/site.css" && exit 1)
-          test -f public/_/js/site.js  || (echo "ERROR: missing public/_/js/site.js" && exit 1)
-          test -d public/_/font        || (echo "ERROR: missing public/_/font" && exit 1)
+          test -f public/_/js/site.js   || (echo "ERROR: missing public/_/js/site.js" && exit 1)
+          test -d public/_/font         || (echo "ERROR: missing public/_/font" && exit 1)
+          test -d public/_/img          || (echo "ERROR: missing public/_/img" && exit 1)
+          test -d public/_/layouts      || (echo "ERROR: missing public/_/layouts" && exit 1)
+          test -d public/_/partials     || (echo "ERROR: missing public/_/partials" && exit 1)
 
       - name: 🔨 Build preview (this stages into public/)"
         run: |
@@ -94,3 +106,29 @@ jobs:
         with:
           name: ui-bundle
           path: build/ui-bundle.zip
+
+
+# ---------------------------------------------------------------------------------------
+
+  github-release:
+
+# ---------------------------------------------------------------------------------------
+
+    name: "Create GitHub Release"
+    runs-on: ubuntu-latest
+    needs: publish
+
+    # This workflow runs only when a tag is pushed,
+    # using a tag name starting with "v", e.g. "v1.2.3".
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+
+    env:
+      TAG: ${{ github.ref_name }}
+
+    steps:
+      - name: 🔽 Download all artifacts from previous jobs
+        uses: actions/download-artifact@v5 # https://github.com/actions/download-artifact
+
+      - name: Display downloaded files
+        run: |
+          ls -R
