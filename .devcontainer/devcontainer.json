@@ -1,29 +1,25 @@
 {
-	"name": "Antora Dev Container",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"context": "."
-	},
-	"remoteUser": "vscode",
-	"containerUser": "vscode",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"editorconfig.editorconfig",
-				"dbaeumer.vscode-eslint",
-				"bradlc.vscode-tailwindcss"
-			],
-			"settings": {
-				"extensions.ignoreRecommendations": true,
-				"terminal.integrated.defaultProfile.linux": "zsh",
-				"terminal.integrated.shell.linux": "/bin/zsh",
-				// tell VSCode that you want the shell to be a login, interactive shell
-				"terminal.integrated.shellArgs.linux": ["-l", "-i"]
-			}
-		}
-	},
-	"postCreateCommand": "node -v && npm -v && gulp --version && antora --version || true",
-	// Forward the preview server and livereload ports to the host so the browser
-	// running on the host can connect to the container services.
-	"forwardPorts": [5252, 35729]
+  "name": "Antora Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": ["editorconfig.editorconfig", "dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"],
+      "settings": {
+        "extensions.ignoreRecommendations": true,
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        // tell VSCode that you want the shell to be a login, interactive shell
+        "terminal.integrated.shellArgs.linux": ["-l", "-i"]
+      }
+    }
+  },
+  "postCreateCommand": "node -v && npm -v && gulp --version && antora --version || true",
+  // Forward the preview server and livereload ports to the host so the browser
+  // running on the host can connect to the container services.
+  "forwardPorts": [5252, 35729]
 }

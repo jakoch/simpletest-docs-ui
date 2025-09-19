@@ -1,3 +1,1 @@
-"use strict";
-
-module.exports = (val) => !val;
+module.exports = val => !val

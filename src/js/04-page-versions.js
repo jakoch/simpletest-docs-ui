@@ -1,17 +1,15 @@
-(function () {
-	"use strict";
+;(() => {
+  const toggle = document.querySelector('.page-versions .version-menu-toggle')
+  if (!toggle) return
 
-	const toggle = document.querySelector(".page-versions .version-menu-toggle");
-	if (!toggle) return;
+  const selector = document.querySelector('.page-versions')
 
-	const selector = document.querySelector(".page-versions");
+  toggle.addEventListener('click', e => {
+    selector.classList.toggle('is-active')
+    e.stopPropagation() // trap event
+  })
 
-	toggle.addEventListener("click", function (e) {
-		selector.classList.toggle("is-active");
-		e.stopPropagation(); // trap event
-	});
-
-	document.documentElement.addEventListener("click", function () {
-		selector.classList.remove("is-active");
-	});
-})();
+  document.documentElement.addEventListener('click', () => {
+    selector.classList.remove('is-active')
+  })
+})()

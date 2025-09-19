@@ -62,7 +62,7 @@ jobs:
 
       - name: Lint
         run: |
-          npx gulp lint
+          npm run lint:all
 
       - name: 🔨 Build assets (this stages assets (css,js,fonts,etc) into public/_)
         run: |
