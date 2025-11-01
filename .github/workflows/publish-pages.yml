@@ -134,7 +134,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: 🔽 Download all artifacts from previous jobs
-        uses: actions/download-artifact@v5 # https://github.com/actions/download-artifact
+        uses: actions/download-artifact@v6 # https://github.com/actions/download-artifact
 
       - name: Display downloaded files
         run: |
