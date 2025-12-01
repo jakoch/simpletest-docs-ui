@@ -39,7 +39,7 @@ jobs:
 
     steps:
       - name: 🤘 Checkout main branch
-        uses: actions/checkout@v5 # https://github.com/actions/checkout
+        uses: actions/checkout@v6 # https://github.com/actions/checkout
 
       - name: 🔽 Setup Node.js
         uses: actions/setup-node@v6 # https://github.com/actions/setup-node
@@ -131,7 +131,7 @@ jobs:
       # you need to be in a git repo to use the gh cli.
       # you can not simply download a file and use gh release create.
       - name: 🔽 Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: 🔽 Download all artifacts from previous jobs
         uses: actions/download-artifact@v6 # https://github.com/actions/download-artifact
