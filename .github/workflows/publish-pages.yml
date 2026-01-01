@@ -104,7 +104,7 @@ jobs:
 
       # Upload the UI bundle as an artifact (useable as Antora UI bundle)
       - name: Upload UI bundle as artifact
-        uses: actions/upload-artifact@v5 # https://github.com/actions/upload-artifact
+        uses: actions/upload-artifact@v6 # https://github.com/actions/upload-artifact
         with:
           name: ui-bundle
           path: build/ui-bundle.zip
