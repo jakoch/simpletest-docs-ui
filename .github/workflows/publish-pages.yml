@@ -91,7 +91,7 @@ jobs:
 
       # Publish the `public` folder to GitHub Pages (UI demo site)
       - name: 📦 Upload `public` folder for Pages
-        uses: actions/upload-pages-artifact@v4 # https://github.com/actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v5 # https://github.com/actions/upload-pages-artifact
         with:
           path: public
 
