@@ -71,21 +71,10 @@
   "bugs": {
     "url": "https://github.com/jakoch/simpletest-docs-ui/issues"
   },
-  "browserslist": [
-    "last 2 versions"
-  ],
+  "browserslist": ["last 2 versions"],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
   },
-  "keywords": [
-    "antora",
-    "asciidoctor",
-    "docs",
-    "documentation",
-    "ui",
-    "theme",
-    "tailwindcss",
-    "simpletest"
-  ]
+  "keywords": ["antora", "asciidoctor", "docs", "documentation", "ui", "theme", "tailwindcss", "simpletest"]
 }
