@@ -27,7 +27,8 @@
     "reinstall": "npm run clean && npm install --legacy-peer-deps",
     "lint:all": "npm run lint:css && npm run format:check",
     "lint:css": "stylelint \"src/css/**/*.css\" --config .stylelintrc",
-    "lint:css:fix": "stylelint \"src/css/**/*.css\" --fix --config .stylelintrc"
+    "lint:css:fix": "stylelint \"src/css/**/*.css\" --fix --config .stylelintrc",
+    "browserslist:update": "npx update-browserslist-db@latest && npm i baseline-browser-mapping@latest -D"
   },
   "devDependencies": {
     "@asciidoctor/core": "~3.0",
@@ -37,6 +38,7 @@
     "@tailwindcss/postcss": "^4.1.12",
     "@vscode/gulp-vinyl-zip": "~2.6",
     "autoprefixer": "~10.4",
+    "baseline-browser-mapping": "^2.10.40",
     "browser-pack-flat": "~3.5",
     "browserify": "~17.0",
     "cssnano": "~7.1",
@@ -45,7 +47,7 @@
     "gulp": "~5.0",
     "gulp-concat": "~2.6",
     "gulp-connect": "^5.0.0",
-    "gulp-imagemin": "^9.2.0",
+    "gulp-imagemin": "^7.1.0",
     "gulp-newer": "~1.4",
     "gulp-postcss": "~10.0",
     "gulp-uglify": "~3.0",
@@ -69,10 +71,21 @@
   "bugs": {
     "url": "https://github.com/jakoch/simpletest-docs-ui/issues"
   },
-  "browserslist": ["last 2 versions"],
+  "browserslist": [
+    "last 2 versions"
+  ],
   "engines": {
     "node": ">=20.0.0",
     "npm": ">=10.0.0"
   },
-  "keywords": ["antora", "asciidoctor", "docs", "documentation", "ui", "theme", "tailwindcss", "simpletest"]
+  "keywords": [
+    "antora",
+    "asciidoctor",
+    "docs",
+    "documentation",
+    "ui",
+    "theme",
+    "tailwindcss",
+    "simpletest"
+  ]
 }
