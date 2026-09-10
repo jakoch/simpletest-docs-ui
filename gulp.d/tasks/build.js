@@ -113,9 +113,9 @@ module.exports = (src, dest, preview) => {
       im.optipng?.(),
       im.svgo?.({
         plugins: [
-          { cleanupIDs: { preservePrefixes: ['icon-', 'view-'] } },
-          { removeViewBox: false },
-          { removeDesc: false }
+          { name: 'cleanupIDs', params: { preservePrefixes: ['icon-', 'view-'] } },
+          { name: 'removeViewBox', active: false },
+          { name: 'removeDesc', active: false }
         ]
       })
     ].reduce((accum, it) => (it ? accum.concat(it) : accum), [])
